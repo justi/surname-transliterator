@@ -84,7 +84,7 @@ module Surname
       }
     }
 
-    # Polonization/de-polonization mappings for specific pairs
+    # Polonization/de-polonization mappings for specific pairs (based on genealogical sources)
     POLONIZATION_MAPPINGS = {
       'polish_to_lithuanian' => {
         'owicz' => 'avičius',
@@ -100,7 +100,9 @@ module Surname
         'evskis' => 'ewski',
         'ickis' => 'icki',
         'skis' => 'ski',
-        'ckis' => 'cki'
+        'ckis' => 'cki',
+        'onis' => 'owicz',  # e.g., Jonas → Janowicz
+        'aitis' => 'owicz'  # rarer, e.g., Kazlauskas variations
       },
       'polish_to_russian' => {
         'ski' => 'skii',
