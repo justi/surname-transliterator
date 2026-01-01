@@ -10,8 +10,6 @@ Features:
 
 ## Installation
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
-
 Install the gem and add to the application's Gemfile by executing:
 
 ```bash
@@ -31,23 +29,23 @@ require 'surname/transliterator'
 
 # Convenience methods
 polish_to_lith = Surname::Transliterator.polish_to_lithuanian("Łukasiewicz")
-# => ["Lukasiewicz"] (only transliterated, no transformation)
+# => ["Lukasiewič"] (transliterated with Polish digraphs)
 
 polish_to_lith2 = Surname::Transliterator.polish_to_lithuanian("Antonowicz")
-# => ["Antonowicz", "Antanavicius"] (transliterated + transformed)
+# => ["Antonavičius", "Antonowič"] (transliterated + transformed)
 
 lith_to_polish = Surname::Transliterator.lithuanian_to_polish("Jankauskas")
-# => ["Jankauskas", "Jankowski"]
+# => ["Jankauski", "Jankauskas"] (transformed + transliterated)
 
 polish_to_russian = Surname::Transliterator.polish_to_russian("Kowalski")
 # => ["Kowalski", "Kowalskii"]
 
 russian_to_polish = Surname::Transliterator.russian_to_polish("Иванов")
-# => ["Ivanov", "Ivanov"]
+# => ["Ivanov"]
 
 # General cross-language normalization (includes W/V interchange for genealogical matching)
 variants = Surname::Transliterator.normalize_surname("Wiszniewski", 'polish', 'lithuanian')
-# => ["Wisniewski", "Visnievskis", "Visniewski"] (transliterated + transformed + W/V variants)
+# => ["Wišnievskis", "Wišnievskas", "Wišniewski", "Višnievskis", "Višnievskas", "Višniewski"] (transformed + W/V)
 
 # Just transliterate (remove diacritics/Cyrillic)
 clean_polish = Surname::Transliterator.transliterate("Świętochowski", 'polish')
@@ -86,10 +84,10 @@ Below is a matrix showing example transformations between languages (not symmetr
 
 | From → To          | Polish → Lithuanian | Lithuanian → Polish |
 |--------------------|---------------------|---------------------|
-| Antonowicz        | Antonowicz, Antanavicius | - |
-| Jankauskas        | - | Jankauskas, Jankowski |
+| Antonowicz        | Antonavičius, Antonowič | - |
+| Jankauskas        | - | Jankauski, Jankauskas |
 | Kowalski          | Kovalskis           | - |
-| Wiśniewski        | Višnievskis         | - |
+| Wiśniewski        | Višnievskis, Višnievskas | - |
 | Dombrovskis       | - | Dombrowski          |
 
 This illustrates why separate methods are needed for each direction.
