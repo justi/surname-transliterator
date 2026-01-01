@@ -59,6 +59,25 @@ clean_russian = Surname::Transliterator.transliterate("Иванов", 'russian')
 
 - **Asymmetric Transformations**: Translations between languages are not symmetric due to historical genealogical adaptations. For example, Polish -owicz may become Lithuanian -avičius, but reversing it doesn't always restore -owicz exactly. Use `polish_to_lithuanian` and `lithuanian_to_polish` as separate methods with their own mappings.
 
+## Supported Languages and Pairs
+
+The gem supports transliteration and transformation for the following languages:
+
+- **Polish**: Full transliteration (diacritics + digraphs like sz/č/cz/rz).
+- **Lithuanian**: Full transliteration.
+- **Russian**: Full transliteration.
+- **Czech**: Basic transliteration.
+
+### Supported Language Pairs for Transformations
+
+| From ↓ / To → | Polish | Lithuanian | Russian |
+|---------------|--------|------------|---------|
+| **Polish**   | -      | ✅ (polish_to_lithuanian) | ✅ (polish_to_russian) |
+| **Lithuanian**| ✅ (lithuanian_to_polish) | - | - |
+| **Russian**  | ✅ (russian_to_polish) | - | - |
+
+Note: Transformations are asymmetric (see below). Add more pairs by editing `POLONIZATION_MAPPINGS`.
+
 ## Transformation Matrix Examples
 
 Below is a matrix showing example transformations between languages (not symmetric):
