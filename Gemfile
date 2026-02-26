@@ -2,11 +2,14 @@
 
 source "https://rubygems.org"
 
-# Specify your gem's dependencies in surname-transliterator.gemspec
 gemspec
 
-gem "irb"
 gem "rake", "~> 13.0"
-gem "rspec", "~> 3.0"
 
-
+group :development, :test do
+  gem "bundler-audit", require: false
+  gem "rspec", "~> 3.13"
+  gem "rubocop", "~> 1.21", require: false
+  gem "rubocop-rake"
+  gem "rubocop-rspec", "~> 3.0"
+end
