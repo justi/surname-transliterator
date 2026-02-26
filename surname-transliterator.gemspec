@@ -11,14 +11,14 @@ Gem::Specification.new do |spec|
   spec.summary = "Cross-language surname transliteration and polonization"
   spec.description = "Ruby gem for cross-language surname transliteration and " \
                      "polonization/de-polonization of endings. Supports Polish, " \
-                     "Lithuanian, Russian, Czech. Useful for reducing false positives " \
+                     "Lithuanian, Russian. Useful for reducing false positives " \
                      "in genealogical data matching."
   spec.homepage = "https://github.com/justi/surname-transliterator"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.1.0"
 
   spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = spec.homepage
+  spec.metadata["source_code_uri"] = "#{spec.homepage}/tree/main"
   spec.metadata["changelog_uri"] = "#{spec.homepage}/blob/main/CHANGELOG.md"
   spec.metadata["rubygems_mfa_required"] = "true"
 

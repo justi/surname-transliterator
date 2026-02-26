@@ -1,6 +1,6 @@
 # Surname::Transliterator
 
-A Ruby gem for cross-language surname transliteration and transformation, based on genealogical rules. Supports transliteration (removing diacritics/Cyrillic) and polonization/de-polonization endings between languages like Polish-Lithuanian, Polish-Russian, Czech, etc. Extensible for more pairs. Useful for reducing false positives in genealogical matching.
+A Ruby gem for cross-language surname transliteration and transformation, based on genealogical rules. Supports transliteration (removing diacritics/Cyrillic) and polonization/de-polonization endings between languages like Polish-Lithuanian, Polish-Russian. Extensible for more pairs. Useful for reducing false positives in genealogical matching.
 
 Features:
 - Transliterate surnames (remove diacritics/Cyrillic, handle Polish digraphs like sz/č/cz/rz).
@@ -66,7 +66,7 @@ The gem supports transliteration and transformation for the following languages:
 - **Polish**: Full transliteration (diacritics + digraphs like sz/č/cz/rz).
 - **Lithuanian**: Full transliteration.
 - **Russian**: Full transliteration.
-- **Czech**: Basic transliteration.
+- **Czech**: Basic transliteration (diacritics only, no ending transformations).
 
 ### Supported Language Pairs for Transformations
 
@@ -101,14 +101,6 @@ Edit `DIACRITIC_MAPPINGS` and `POLONIZATION_MAPPINGS` in the code to add support
 After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
-
-## TODO
-
-- Add polonization mappings for Czech surnames.
-- Extend support for more language pairs (e.g., Lithuanian ↔ Russian).
-- Improve W/V interchange logic for other languages.
-- Add more genealogical sources for mapping validation.
-- Consider adding fuzzy matching or Soundex for better approximate matches.
 
 ## Contributing
 

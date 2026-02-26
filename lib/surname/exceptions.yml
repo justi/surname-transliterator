@@ -1,0 +1,4 @@
+# Exceptions for surname transliteration (rare cases that don't follow suffix rules)
+# Format: from_surname => [to_variants]
+żyliński:
+  - žilinskas
