@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2026-02-26
+
+### Changed
+- Migrated repo from justi-blue org to justi user account
+- Replaced StandardRB with RuboCop + rubocop-rspec + rubocop-rake
+- Added bundler-audit security scanning to CI
+- Updated CI workflow with separate audit, lint, and test steps
+- Cleaned up gemspec (fixed URLs, removed boilerplate)
+- Removed .gem build artifacts from repo
+
+### Fixed
+- Fixed Gemfile.lock version mismatch causing CI failures
+- Fixed duplicate specs and merged repeated describe blocks
+
 ## [0.4.3] - 2025-01-01
 
 ### Added
