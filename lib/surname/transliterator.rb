@@ -8,6 +8,12 @@ module Surname
     # Raised for transliteration errors
     class Error < StandardError; end
 
+    LANG_POLISH = "polish"
+    LANG_LITHUANIAN = "lithuanian"
+    LANG_RUSSIAN = "russian"
+
+    POLISH_DIGRAPHS = { "sz" => "š", "cz" => "č", "rz" => "ž" }.freeze
+
     DIACRITIC_MAPPINGS = {
       polish: {
         "ą" => "a", "ć" => "c", "ę" => "e", "ł" => "l", "ń" => "n",
@@ -78,7 +84,7 @@ module Surname
       return surname if surname.to_s.empty?
 
       normalized = apply_diacritics(surname.downcase, from_lang)
-      normalized = apply_polish_digraphs(normalized) if from_lang == "polish"
+      normalized = apply_polish_digraphs(normalized) if from_lang == LANG_POLISH
       normalized.capitalize
     end
 
@@ -98,19 +104,19 @@ module Surname
     end
 
     def self.polish_to_lithuanian(surname)
-      normalize_surname(surname, "polish", "lithuanian")
+      normalize_surname(surname, LANG_POLISH, LANG_LITHUANIAN)
     end
 
     def self.lithuanian_to_polish(surname)
-      normalize_surname(surname, "lithuanian", "polish")
+      normalize_surname(surname, LANG_LITHUANIAN, LANG_POLISH)
     end
 
     def self.polish_to_russian(surname)
-      normalize_surname(surname, "polish", "russian")
+      normalize_surname(surname, LANG_POLISH, LANG_RUSSIAN)
     end
 
     def self.russian_to_polish(surname)
-      normalize_surname(surname, "russian", "polish")
+      normalize_surname(surname, LANG_RUSSIAN, LANG_POLISH)
     end
 
     class << self
@@ -122,7 +128,7 @@ module Surname
       end
 
       def apply_polish_digraphs(text)
-        text.gsub("sz", "š").gsub("cz", "č").gsub("rz", "ž")
+        POLISH_DIGRAPHS.reduce(text) { |result, (digraph, replacement)| result.gsub(digraph, replacement) }
       end
 
       def find_matching_ending(normalized, endings)
