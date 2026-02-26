@@ -13,8 +13,8 @@ RSpec.describe Surname::Transliterator do
   end
 
   describe '.lithuanian_to_polish' do
-    it 'transforms Jankauskas to Jankauskas and Jankauski' do
-      expect(described_class.lithuanian_to_polish('Jankauskas')).to eq(%w[Jankauski Jankauskas])
+    it 'transforms Jankauskas to Jankowski and Jankauskas' do
+      expect(described_class.lithuanian_to_polish('Jankauskas')).to eq(%w[Jankowski Jankauskas])
     end
   end
 
