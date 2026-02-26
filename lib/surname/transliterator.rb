@@ -3,88 +3,36 @@
 require_relative "transliterator/version"
 
 module Surname
+  # Cross-language surname transliteration and polonization/de-polonization.
   module Transliterator
+    # Raised for transliteration errors
     class Error < StandardError; end
 
-    # Language mappings for transliteration (remove diacritics/Cyrillic to base Latin)
     DIACRITIC_MAPPINGS = {
       polish: {
-        "ą" => "a",
-        "ć" => "c",
-        "ę" => "e",
-        "ł" => "l",
-        "ń" => "n",
-        "ó" => "o",
-        "ś" => "s",
-        "ź" => "z",
-        "ż" => "z"
+        "ą" => "a", "ć" => "c", "ę" => "e", "ł" => "l", "ń" => "n",
+        "ó" => "o", "ś" => "s", "ź" => "z", "ż" => "z"
       },
       lithuanian: {
-        "ą" => "a",
-        "č" => "c",
-        "ę" => "e",
-        "ė" => "e",
-        "į" => "i",
-        "š" => "s",
-        "ų" => "u",
-        "ū" => "u",
-        "ž" => "z"
+        "ą" => "a", "č" => "c", "ę" => "e", "ė" => "e", "į" => "i",
+        "š" => "s", "ų" => "u", "ū" => "u", "ž" => "z"
       },
       czech: {
-        "á" => "a",
-        "č" => "c",
-        "ď" => "d",
-        "é" => "e",
-        "ě" => "e",
-        "í" => "i",
-        "ň" => "n",
-        "ó" => "o",
-        "ř" => "r",
-        "š" => "s",
-        "ť" => "t",
-        "ú" => "u",
-        "ů" => "u",
-        "ý" => "y",
-        "ž" => "z"
+        "á" => "a", "č" => "c", "ď" => "d", "é" => "e", "ě" => "e",
+        "í" => "i", "ň" => "n", "ó" => "o", "ř" => "r", "š" => "s",
+        "ť" => "t", "ú" => "u", "ů" => "u", "ý" => "y", "ž" => "z"
       },
       russian: {
-        "а" => "a",
-        "б" => "b",
-        "в" => "v",
-        "г" => "g",
-        "д" => "d",
-        "е" => "e",
-        "ё" => "e",
-        "ж" => "zh",
-        "з" => "z",
-        "и" => "i",
-        "й" => "i",
-        "к" => "k",
-        "л" => "l",
-        "м" => "m",
-        "н" => "n",
-        "о" => "o",
-        "п" => "p",
-        "р" => "r",
-        "с" => "s",
-        "т" => "t",
-        "у" => "u",
-        "ф" => "f",
-        "х" => "kh",
-        "ц" => "ts",
-        "ч" => "ch",
-        "ш" => "sh",
-        "щ" => "shch",
-        "ъ" => "",
-        "ы" => "y",
-        "ь" => "",
-        "э" => "e",
-        "ю" => "iu",
-        "я" => "ia"
+        "а" => "a", "б" => "b", "в" => "v", "г" => "g", "д" => "d",
+        "е" => "e", "ё" => "e", "ж" => "zh", "з" => "z", "и" => "i",
+        "й" => "i", "к" => "k", "л" => "l", "м" => "m", "н" => "n",
+        "о" => "o", "п" => "p", "р" => "r", "с" => "s", "т" => "t",
+        "у" => "u", "ф" => "f", "х" => "kh", "ц" => "ts", "ч" => "ch",
+        "ш" => "sh", "щ" => "shch", "ъ" => "", "ы" => "y", "ь" => "",
+        "э" => "e", "ю" => "iu", "я" => "ia"
       }
     }.freeze
 
-    # Polonization/de-polonization mappings for specific pairs (based on genealogical sources)
     POLONIZATION_MAPPINGS = {
       "polish_to_lithuanian" => {
         "owicz" => ["avičius"],
@@ -96,107 +44,59 @@ module Surname
         "cki" => %w[ckis ckas]
       },
       "lithuanian_to_polish" => {
+        "auskas" => ["owski"],
         "avičius" => ["owicz"],
+        "ovicius" => ["owski"],
         "ovskis" => ["owski"],
         "ovskas" => ["owski"],
-        "ovicius" => ["owski"],
         "evskis" => ["ewski"],
         "evskas" => ["ewski"],
+        "aitis" => ["owicz"],
         "ickis" => ["icki"],
+        "onis" => ["owicz"],
         "akas" => ["ak"],
         "skis" => ["ski"],
         "skas" => ["ski"],
         "ckis" => ["cki"],
-        "ckas" => ["cki"],
-        "auskas" => ["owski"], # e.g., Jankauskas → Jankowski
-        "onis" => ["owicz"],  # e.g., Jonas → Janowicz
-        "aitis" => ["owicz"]  # rarer, e.g., Kazlauskas variations
+        "ckas" => ["cki"]
       },
       "polish_to_russian" => {
-        "ski" => "skii",
-        "cki" => "tskii",
         "owicz" => "ovich",
-        "owski" => "ovskii"
+        "owski" => "ovskii",
+        "ski" => "skii",
+        "cki" => "tskii"
       },
       "russian_to_polish" => {
-        "skii" => "ski",
-        "tskii" => "cki",
+        "ovskii" => "owski",
         "ovich" => "owicz",
-        "ovskii" => "owski"
+        "tskii" => "cki",
+        "skii" => "ski"
       }
     }.freeze
 
-    # General transliteration (remove diacritics)
     def self.transliterate(surname, from_lang)
-      return surname if surname.nil? || surname.empty?
+      return surname if surname.to_s.empty?
 
-      normalized = surname.downcase
-      mappings = DIACRITIC_MAPPINGS[from_lang.to_sym] || {}
-
-      mappings.each do |accented, base|
-        normalized = normalized.gsub(accented, base)
-      end
-
-      # Handle Polish digraphs
-      normalized = normalized.gsub("sz", "š").gsub("cz", "č").gsub("rz", "ž") if from_lang == "polish"
-
+      normalized = apply_diacritics(surname.downcase, from_lang)
+      normalized = apply_polish_digraphs(normalized) if from_lang == "polish"
       normalized.capitalize
     end
 
-    # Polonization/de-polonization between languages
     def self.transform_ending(surname, from_lang, to_lang)
-      return [surname] if surname.nil? || surname.empty?
+      return [surname] if surname.to_s.empty?
 
-      key = "#{from_lang}_to_#{to_lang}"
-      endings = POLONIZATION_MAPPINGS[key] || {}
-
-      normalized = surname.downcase
-      variants = []
-      # Sort endings by length descending to match longest first
-      sorted_endings = endings.sort_by { |k, _v| -k.length }
-      sorted_endings.each do |from_ending, to_endings|
-        next unless normalized.end_with?(from_ending)
-
-        Array(to_endings).each do |to_ending|
-          transformed = normalized.sub(/#{from_ending}$/, to_ending)
-          variants << transformed.capitalize
-        end
-        # Break after first match to avoid overlapping
-        break
-      end
-
-      variants.uniq
+      endings = POLONIZATION_MAPPINGS["#{from_lang}_to_#{to_lang}"] || {}
+      find_matching_ending(surname.downcase, endings)
     end
 
-    # Full cross-language surname normalization
     def self.normalize_surname(surname, from_lang, to_lang)
-      # First, transform endings if applicable
-      transformed_variants = transform_ending(surname, from_lang, to_lang)
-      # Then, transliterate each variant to remove diacritics and handle digraphs
-      variants = transformed_variants.map { |v| transliterate(v, from_lang) }
+      transformed = transform_ending(surname, from_lang, to_lang)
+      variants = transformed.map { |variant| transliterate(variant, from_lang) }
+      variants << transliterate(surname, from_lang) unless transformed == [surname]
 
-      # If no transformation, add the transliterated original
-      if transformed_variants == [surname]
-        # Already included
-      else
-        variants << transliterate(surname, from_lang)
-      end
-
-      # Add W/V interchange variants for genealogical matching
-      additional = []
-      variants.each do |v|
-        if v.start_with?("W")
-          additional << v.sub(/^W/, "V")
-        elsif v.start_with?("V")
-          additional << v.sub(/^V/, "W")
-        end
-      end
-      variants.concat(additional)
-
-      variants.uniq.reject { |v| v.nil? || v.empty? }
+      with_wv_interchange(variants)
     end
 
-    # Convenience methods
     def self.polish_to_lithuanian(surname)
       normalize_surname(surname, "polish", "lithuanian")
     end
@@ -213,6 +113,37 @@ module Surname
       normalize_surname(surname, "russian", "polish")
     end
 
-    # Add more pairs as needed, e.g., polish_to_czech, etc.
+    class << self
+      private
+
+      def apply_diacritics(text, lang)
+        mappings = DIACRITIC_MAPPINGS[lang.to_sym] || {}
+        mappings.reduce(text) { |result, (accented, base)| result.gsub(accented, base) }
+      end
+
+      def apply_polish_digraphs(text)
+        text.gsub("sz", "š").gsub("cz", "č").gsub("rz", "ž")
+      end
+
+      def find_matching_ending(normalized, endings)
+        from_ending, to_endings = endings.sort_by { |ending, _| -ending.length }
+                                         .find { |ending, _| normalized.end_with?(ending) }
+        return [] unless from_ending
+
+        Array(to_endings).map { |to| normalized.sub(/#{from_ending}$/, to).capitalize }.uniq
+      end
+
+      def with_wv_interchange(variants)
+        interchange = variants.filter_map do |variant|
+          if variant.start_with?("W")
+            variant.sub(/^W/, "V")
+          elsif variant.start_with?("V")
+            variant.sub(/^V/, "W")
+          end
+        end
+
+        (variants + interchange).uniq.compact.reject(&:empty?)
+      end
+    end
   end
 end
